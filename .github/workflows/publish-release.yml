@@ -13,4 +13,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view v3.0.0 >/dev/null 2>&1 || gh release create v3.0.0 releases/RunTimer-v3.0.0.apk --title "跑單計時器 3.0.0" --notes "新增背景高精度 GPS、卡片循環不限單、滾動趟次、取餐送達確認、取消原因與收入、合併預估拆分及違法紅字警示。"
+          gh release view v3.1.0 >/dev/null 2>&1 || gh release create v3.1.0 releases/RunTimer-v3.1.0.apk --title "跑單計時器 3.1.0" --notes "新增成果圖片與 Excel .xlsx 匯出，可依選定日期保存完整趟次、訂單、費用、時間、里程、取消收入及違法警示。"
