@@ -13,7 +13,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p releases
-          cat .release-parts/RunLion-v3.5.0.apk.b64.part1 .release-parts/RunLion-v3.5.0.apk.b64.part2 | base64 --decode > releases/RunLion-v3.5.0.apk
-          gh release upload v3.5.0 releases/RunLion-v3.5.0.apk --clobber
-          gh release edit v3.5.0 --draft=false --latest --title "跑單大獅 3.5.0" --notes "正式更名為跑單大獅並更新獅子系列圖示；新增背景獅頭浮動按鈕與迷你操作視窗；加入狀態列及瀏海安全距離，避免最上排文字遭遮擋。"
+          gh release view v3.5.0 >/dev/null
