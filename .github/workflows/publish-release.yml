@@ -13,4 +13,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view v3.2.0 >/dev/null 2>&1 || gh release create v3.2.0 releases/RunTimer-v3.2.0.apk --title "跑單計時器 3.2.0" --notes "取消時只記錄原因，不再立即詢問收入；平台報酬確定後，可在成果表直接補登每張取消訂單的收入，並同步至圖片與 Excel 匯出。"
+          if gh release view v3.5.0 >/dev/null 2>&1; then
+            exit 0
+          fi
+          mkdir -p releases
+          cat .release-parts/RunLion-v3.5.0.apk.b64.part1 .release-parts/RunLion-v3.5.0.apk.b64.part2 | base64 --decode > releases/RunLion-v3.5.0.apk
+          gh release create v3.5.0 releases/RunLion-v3.5.0.apk --title "跑單大獅 3.5.0" --notes "正式更名為跑單大獅並更新獅子系列圖示；新增背景獅頭浮動按鈕與迷你操作視窗；加入狀態列及瀏海安全距離，避免最上排文字遭遮擋。"
