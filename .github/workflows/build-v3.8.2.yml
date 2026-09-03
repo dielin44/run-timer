@@ -1,0 +1,31 @@
+name: Build RunLion v3.8.2 DEX
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".build-input/v3.8.2/**"
+      - ".github/workflows/build-v3.8.2.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build-dex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reassemble compiled classes
+        run: cat .build-input/v3.8.2/part-* > classes.jar
+      - name: Convert classes to DEX
+        run: |
+          mkdir -p dex .build-output/v3.8.2
+          "$ANDROID_HOME/build-tools/35.0.0/d8" --min-api 24 --output dex classes.jar
+          cp dex/classes.dex .build-output/v3.8.2/classes.dex
+      - name: Return DEX to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .build-output/v3.8.2/classes.dex
+          git commit -m "Build v3.8.2 DEX"
+          git push
