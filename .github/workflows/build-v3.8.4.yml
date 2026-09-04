@@ -1,0 +1,51 @@
+name: Build RunLion v3.8.4 DEX
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".build-input/v3.8.4/**"
+      - ".github/workflows/build-v3.8.4.yml"
+permissions:
+  contents: write
+jobs:
+  build-dex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reassemble source
+        run: |
+          mkdir source
+          cat .build-input/v3.8.4/part-* > source.tar.gz
+          tar -xzf source.tar.gz -C source
+      - name: Compile application and tests
+        run: |
+          cd source
+          ANDROID_JAR="$ANDROID_HOME/platforms/android-35/android.jar"
+          mkdir -p classes test-classes
+          javac -encoding UTF-8 -source 8 -target 8 -classpath "$ANDROID_JAR" -d classes $(find src -name '*.java' -print)
+          javac -encoding UTF-8 -d test-classes \
+            src/tw/com/deliverylaw/timer/TimeRangeCalculator.java \
+            src/tw/com/deliverylaw/timer/OrderIncomeCalculator.java \
+            src/tw/com/deliverylaw/timer/CardSlotAllocator.java \
+            src/tw/com/deliverylaw/timer/BonusTimeRules.java \
+            src/tw/com/deliverylaw/timer/IdealAmountRules.java \
+            src/tw/com/deliverylaw/timer/NetIncomeMetrics.java \
+            src/tw/com/deliverylaw/timer/ExportImageSizing.java \
+            tests/tw/com/deliverylaw/timer/*.java
+          for test_class in TimeRangeCalculatorTest OrderIncomeCalculatorTest CardSlotAllocatorTest BonusTimeRulesTest IdealAmountRulesTest NetIncomeMetricsTest ExportImageSizingTest; do
+            java -cp test-classes "tw.com.deliverylaw.timer.${test_class}"
+          done
+      - name: Convert to DEX
+        run: |
+          cd source
+          jar cf classes.jar -C classes .
+          mkdir -p dex ../.build-output/v3.8.4
+          "$ANDROID_HOME/build-tools/35.0.0/d8" --min-api 24 --output dex classes.jar
+          cp dex/classes.dex ../.build-output/v3.8.4/classes.dex
+      - name: Return DEX to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .build-output/v3.8.4/classes.dex
+          git commit -m "Build v3.8.4 DEX"
+          git push
