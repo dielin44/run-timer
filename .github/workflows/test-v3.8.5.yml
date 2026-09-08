@@ -20,7 +20,7 @@ jobs:
         run: |
           mkdir source
           cat .ci-input/v3.8.5/part-* > /tmp/runlion-v385-source.tar.gz
-          echo '00b9daa5cf28cba5971881bf10fa54c8202f7423f786cedff1d1546a46587435  /tmp/runlion-v385-source.tar.gz' | sha256sum --check -
+          echo 'f74964ee1233ad5c41674b3e5ef6f8871b32b99c6800f73580bf4ce06ec98b75  /tmp/runlion-v385-source.tar.gz' | sha256sum --check -
           tar -xzf /tmp/runlion-v385-source.tar.gz -C source
           chmod +x source/ci/build-ci.sh source/ci/run-instrumentation.sh
       - name: Compile, run pure tests, and build debug APKs
