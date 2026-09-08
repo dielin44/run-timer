@@ -1,0 +1,49 @@
+name: Test RunLion v3.8.5
+
+on:
+  push:
+    branches: [codex/v3.8.5-ci]
+    paths:
+      - ".ci-input/v3.8.5/**"
+      - ".github/workflows/test-v3.8.5.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  android-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore isolated test source
+        run: |
+          mkdir source
+          cat .ci-input/v3.8.5/part-* > /tmp/runlion-v385-source.tar.gz
+          echo '00b9daa5cf28cba5971881bf10fa54c8202f7423f786cedff1d1546a46587435  /tmp/runlion-v385-source.tar.gz' | sha256sum --check -
+          tar -xzf /tmp/runlion-v385-source.tar.gz -C source
+          chmod +x source/ci/build-ci.sh source/ci/run-instrumentation.sh
+      - name: Compile, run pure tests, and build debug APKs
+        run: cd source && ./ci/build-ci.sh
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run Android persistence and lifecycle tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: default
+          profile: pixel_7
+          script: cd source && ./ci/run-instrumentation.sh
+      - name: Upload verified DEX and test evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: runlion-v3.8.5-ci-output
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            source/build-ci/dex/classes.dex
+            source/build-ci/results/
