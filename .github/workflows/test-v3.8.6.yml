@@ -23,7 +23,7 @@ jobs:
           echo 'f74964ee1233ad5c41674b3e5ef6f8871b32b99c6800f73580bf4ce06ec98b75  /tmp/runlion-v385-source.tar.gz' | sha256sum --check -
           tar -xzf /tmp/runlion-v385-source.tar.gz -C source
           cat .ci-input/v3.8.6/patch-part-* > /tmp/runlion-v386-changes.patch.gz
-          echo '91b0b129bc11f7be3f2ba331eb7aa67a23a007c2a7c4e1220cd551b65673a750  /tmp/runlion-v386-changes.patch.gz' | sha256sum --check -
+          echo '537410913a566c737d54073148b91086f3157c1ba4cdd5ee6db4478260e41ccd  /tmp/runlion-v386-changes.patch.gz' | sha256sum --check -
           gzip -dc /tmp/runlion-v386-changes.patch.gz > /tmp/runlion-v386-changes.patch
           patch --batch -d source -p1 < /tmp/runlion-v386-changes.patch
           chmod +x source/ci/build-ci.sh source/ci/run-instrumentation.sh
