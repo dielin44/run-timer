@@ -25,7 +25,7 @@ jobs:
           cat .ci-input/v3.8.6/patch-part-* > /tmp/runlion-v386-changes.patch.gz
           echo '91b0b129bc11f7be3f2ba331eb7aa67a23a007c2a7c4e1220cd551b65673a750  /tmp/runlion-v386-changes.patch.gz' | sha256sum --check -
           gzip -dc /tmp/runlion-v386-changes.patch.gz > /tmp/runlion-v386-changes.patch
-          git -C source apply /tmp/runlion-v386-changes.patch
+          patch --batch -d source -p1 < /tmp/runlion-v386-changes.patch
           chmod +x source/ci/build-ci.sh source/ci/run-instrumentation.sh
       - name: Compile, run pure tests, and build debug APKs
         run: cd source && ./ci/build-ci.sh
