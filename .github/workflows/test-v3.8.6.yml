@@ -1,0 +1,53 @@
+name: Test RunLion v3.8.6
+
+on:
+  push:
+    branches: [codex/v3.8.6-ci]
+    paths:
+      - ".ci-input/v3.8.6/**"
+      - ".github/workflows/test-v3.8.6.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  android-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore isolated test source
+        run: |
+          mkdir source
+          cat .ci-input/v3.8.5/part-* > /tmp/runlion-v385-source.tar.gz
+          echo 'f74964ee1233ad5c41674b3e5ef6f8871b32b99c6800f73580bf4ce06ec98b75  /tmp/runlion-v385-source.tar.gz' | sha256sum --check -
+          tar -xzf /tmp/runlion-v385-source.tar.gz -C source
+          cat .ci-input/v3.8.6/patch-part-* > /tmp/runlion-v386-changes.patch.gz
+          echo '7f94a1d6695331b77564e263df6bdeaca414a7f97e78082b9845085ceb85e9d3  /tmp/runlion-v386-changes.patch.gz' | sha256sum --check -
+          gzip -dc /tmp/runlion-v386-changes.patch.gz > /tmp/runlion-v386-changes.patch
+          git -C source apply /tmp/runlion-v386-changes.patch
+          chmod +x source/ci/build-ci.sh source/ci/run-instrumentation.sh
+      - name: Compile, run pure tests, and build debug APKs
+        run: cd source && ./ci/build-ci.sh
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run Android persistence, lifecycle, and UI tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: default
+          profile: pixel_7
+          script: cd source && ./ci/run-instrumentation.sh
+      - name: Upload verified DEX, screenshot, and test evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: runlion-v3.8.6-ci-output
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            source/build-ci/dex/classes.dex
+            source/build-ci/results/
