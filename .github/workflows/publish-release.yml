@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ".release-input/v3.8.3/**"
+      - ".release-input/v3.8.5/**"
       - ".github/workflows/publish-release.yml"
   workflow_dispatch:
 
@@ -18,26 +18,26 @@ jobs:
       - uses: actions/checkout@v4
       - name: Rebuild and verify APK
         run: |
-          cat .release-input/v3.8.3/part-* | base64 --decode > RunLion-v3.8.3.apk
-          echo "7842534115a8d42a94083e4fcdb036311b1c42a113e91ad7c02445cf349dd030 RunLion-v3.8.3.apk" | sha256sum --check -
+          cat .release-input/v3.8.5/part-* | base64 --decode > RunLion-v3.8.5.apk
+          echo "b7bc91e5df71f3bf121892cabc70b202ad53e7deec854f5fbe9df4787c652c6e RunLion-v3.8.5.apk" | sha256sum --check -
       - name: Keep public raw download
         run: |
           mkdir -p releases
-          cp RunLion-v3.8.3.apk releases/RunLion-v3.8.3.apk
-          git add releases/RunLion-v3.8.3.apk
+          cp RunLion-v3.8.5.apk releases/RunLion-v3.8.5.apk
+          git add releases/RunLion-v3.8.5.apk
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Add RunLion v3.8.3 APK"
+            git commit -m "Add RunLion v3.8.5 APK"
             git push
           fi
       - name: Create public release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v3.8.3 >/dev/null 2>&1; then
-            gh release upload v3.8.3 RunLion-v3.8.3.apk --clobber
-            gh release edit v3.8.3 --title "跑單大獅 3.8.3" --notes-file .release-input/v3.8.3/RELEASE_NOTES.md
+          if gh release view v3.8.5 >/dev/null 2>&1; then
+            gh release upload v3.8.5 RunLion-v3.8.5.apk --clobber
+            gh release edit v3.8.5 --title "跑單大獅 3.8.5" --notes-file .release-input/v3.8.5/RELEASE_NOTES.md
           else
-            gh release create v3.8.3 RunLion-v3.8.3.apk --target main --title "跑單大獅 3.8.3" --notes-file .release-input/v3.8.3/RELEASE_NOTES.md
+            gh release create v3.8.5 RunLion-v3.8.5.apk --target main --title "跑單大獅 3.8.5" --notes-file .release-input/v3.8.5/RELEASE_NOTES.md
           fi
