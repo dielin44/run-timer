@@ -1,0 +1,28 @@
+name: Package Android v35 runtime library for RunLion v3.8.8
+
+on:
+  push:
+    branches: [codex/v3.8.8-ci]
+    paths:
+      - ".github/workflows/toolchain-libs-v3.8.8.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package-library:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect Android build-tools runtime library
+        run: |
+          mkdir -p android-v35-lib64
+          cp "$ANDROID_HOME/build-tools/35.0.0/lib64/libc++.so" android-v35-lib64/
+      - name: Upload Android runtime library
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-v35-build-tools-lib64
+          if-no-files-found: error
+          retention-days: 1
+          path: android-v35-lib64/
