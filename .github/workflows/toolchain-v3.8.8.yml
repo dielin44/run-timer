@@ -1,0 +1,35 @@
+name: Package Android v35 tools for RunLion v3.8.8
+
+on:
+  push:
+    branches: [codex/v3.8.8-ci]
+    paths:
+      - ".github/workflows/toolchain-v3.8.8.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package-tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect Android packaging tools
+        run: |
+          mkdir -p android-v35-tools/build-tools/lib android-v35-tools/platform
+          cp "$ANDROID_HOME/build-tools/35.0.0/aapt2" android-v35-tools/build-tools/
+          cp "$ANDROID_HOME/build-tools/35.0.0/zipalign" android-v35-tools/build-tools/
+          cp "$ANDROID_HOME/build-tools/35.0.0/apksigner" android-v35-tools/build-tools/
+          cp "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" android-v35-tools/build-tools/lib/
+          cp "$ANDROID_HOME/platforms/android-35/android.jar" android-v35-tools/platform/
+          chmod +x android-v35-tools/build-tools/aapt2 \
+            android-v35-tools/build-tools/zipalign \
+            android-v35-tools/build-tools/apksigner
+      - name: Upload Android packaging tools
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-v35-packaging-tools
+          if-no-files-found: error
+          retention-days: 1
+          path: android-v35-tools/
