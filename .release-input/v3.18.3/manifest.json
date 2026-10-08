@@ -1,0 +1,14 @@
+{
+  "version": "3.18.3",
+  "size": 48616079,
+  "sha256": "3c41f09a07da8247080615b6d5f3d84796dc48ae09ea28adbe2779025e9949c7",
+  "chunk_bytes": 600000,
+  "total_chunks": 82,
+  "parts": [
+    {
+      "index": 0,
+      "sha": "869a8470032e50053468ede53199c97195db50df",
+      "size": 600000
+    }
+  ]
+}
