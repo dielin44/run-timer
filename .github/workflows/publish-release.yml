@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ".release-input/v3.18.4/**"
+      - ".release-input/v3.18.5/**"
       - ".github/workflows/publish-release.yml"
   workflow_dispatch:
 permissions:
@@ -17,17 +17,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download v3.18.3 --pattern RunLion-v3.18.3.apk --dir base-release
-          python3 .release-input/v3.18.4/reconstruct_apk.py base-release/RunLion-v3.18.3.apk RunLion-v3.18.4.apk
-          echo "833f9d7c4fe4bcb1d5ada67323b7f1c3b271d3dbb582cb01db60454d1324ee65  RunLion-v3.18.4.apk" | sha256sum --check -
-          python3 -m zipfile -t RunLion-v3.18.4.apk
+          gh release download v3.18.4 --pattern RunLion-v3.18.4.apk --dir base-release
+          python3 .release-input/v3.18.5/reconstruct_apk.py base-release/RunLion-v3.18.4.apk RunLion-v3.18.5.apk
+          echo "c8a4fe852f50f66bb1357c3de923c423dea412d07d99fb9b9026bee33d4b19d0  RunLion-v3.18.5.apk" | sha256sum --check -
+          python3 -m zipfile -t RunLion-v3.18.5.apk
       - name: Publish public download
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v3.18.4 >/dev/null 2>&1; then
-            gh release upload v3.18.4 RunLion-v3.18.4.apk .release-input/v3.18.4/RunLion-v3.18.4-patch-kit.zip --clobber
+          if gh release view v3.18.5 >/dev/null 2>&1; then
+            gh release upload v3.18.5 RunLion-v3.18.5.apk .release-input/v3.18.5/RunLion-v3.18.5-patch-kit.zip --clobber
           else
-            gh release create v3.18.4 RunLion-v3.18.4.apk .release-input/v3.18.4/RunLion-v3.18.4-patch-kit.zip --draft --target "$GITHUB_SHA" --title "跑單大獅 3.18.4" --notes-file .release-input/v3.18.4/RELEASE_NOTES.md
+            gh release create v3.18.5 RunLion-v3.18.5.apk .release-input/v3.18.5/RunLion-v3.18.5-patch-kit.zip --draft --target "$GITHUB_SHA" --title "跑單大獅 3.18.5" --notes-file .release-input/v3.18.5/RELEASE_NOTES.md
           fi
-          gh release edit v3.18.4 --draft=false --latest --title "跑單大獅 3.18.4" --notes-file .release-input/v3.18.4/RELEASE_NOTES.md
+          gh release edit v3.18.5 --draft=false --latest --title "跑單大獅 3.18.5" --notes-file .release-input/v3.18.5/RELEASE_NOTES.md
