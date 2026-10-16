@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ".release-input/v3.18.5/**"
+      - ".release-input/v3.19.1/**"
       - ".github/workflows/publish-release.yml"
   workflow_dispatch:
 permissions:
@@ -17,17 +17,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download v3.18.4 --pattern RunLion-v3.18.4.apk --dir base-release
-          python3 .release-input/v3.18.5/reconstruct_apk.py base-release/RunLion-v3.18.4.apk RunLion-v3.18.5.apk
-          echo "c8a4fe852f50f66bb1357c3de923c423dea412d07d99fb9b9026bee33d4b19d0  RunLion-v3.18.5.apk" | sha256sum --check -
-          python3 -m zipfile -t RunLion-v3.18.5.apk
+          gh release download v3.18.5 --pattern RunLion-v3.18.5.apk --dir base-release
+          python3 .release-input/v3.19.1/reconstruct_apk.py base-release/RunLion-v3.18.5.apk RunLion-v3.19.1.apk
+          echo "a95c1b206dc09e6fdb8ceb747718fac1cb07f1f46e0c84aab0e9e4501cca0d56  RunLion-v3.19.1.apk" | sha256sum --check -
+          echo "045f473b790ede04c709bb4481f608055f22d42ca6e2e6011014398ffbbacef7  .release-input/v3.19.1/RunLion-v3.19.1-route-kit.zip" | sha256sum --check -
+          python3 -m zipfile -t RunLion-v3.19.1.apk
+          python3 -m zipfile -t .release-input/v3.19.1/RunLion-v3.19.1-route-kit.zip
       - name: Publish public download
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v3.18.5 >/dev/null 2>&1; then
-            gh release upload v3.18.5 RunLion-v3.18.5.apk .release-input/v3.18.5/RunLion-v3.18.5-patch-kit.zip --clobber
+          if gh release view v3.19.1 >/dev/null 2>&1; then
+            gh release upload v3.19.1 RunLion-v3.19.1.apk .release-input/v3.19.1/RunLion-v3.19.1-route-kit.zip --clobber
           else
-            gh release create v3.18.5 RunLion-v3.18.5.apk .release-input/v3.18.5/RunLion-v3.18.5-patch-kit.zip --draft --target "$GITHUB_SHA" --title "跑單大獅 3.18.5" --notes-file .release-input/v3.18.5/RELEASE_NOTES.md
+            gh release create v3.19.1 RunLion-v3.19.1.apk .release-input/v3.19.1/RunLion-v3.19.1-route-kit.zip --draft --target "$GITHUB_SHA" --title "跑單大獅 3.19.1" --notes-file .release-input/v3.19.1/RELEASE_NOTES.md
           fi
-          gh release edit v3.18.5 --draft=false --latest --title "跑單大獅 3.18.5" --notes-file .release-input/v3.18.5/RELEASE_NOTES.md
+          gh release edit v3.19.1 --draft=false --latest --title "跑單大獅 3.19.1" --notes-file .release-input/v3.19.1/RELEASE_NOTES.md

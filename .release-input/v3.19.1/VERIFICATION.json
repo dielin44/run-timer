@@ -1,0 +1,49 @@
+{
+  "version": "3.19.1",
+  "version_code": 63,
+  "package": "tw.com.deliverylaw.timer",
+  "base_sha256": "c8a4fe852f50f66bb1357c3de923c423dea412d07d99fb9b9026bee33d4b19d0",
+  "sha256": "a95c1b206dc09e6fdb8ceb747718fac1cb07f1f46e0c84aab0e9e4501cca0d56",
+  "size_bytes": 48632459,
+  "certificate_sha256": "30ab839d8235382de5584f58c76f9919a461243f11fcb8808be9592394098d05",
+  "signature_v2_verified": true,
+  "tampering_rejected": true,
+  "zip_integrity": true,
+  "unchanged_noncode_entries": 502,
+  "native_zip_alignment_16kb": true,
+  "preservation": "PASS: 8497 unrelated classes and 406 unrelated methods unchanged; 16 changed methods; 49 added feature classes",
+  "physical_device_tested": false,
+  "emulator_tested": false,
+  "tests": {
+    "passed": 323,
+    "groups": {
+      "TestRouteCore": 37,
+      "TestRouteOrders": 12,
+      "TestRouteMerchant": 22,
+      "TestRouteMapStyle": 8,
+      "test_route_sql.py": 11,
+      "test_route_hooks.py": 25,
+      "accounting_and_card": 64,
+      "merchant_flow": 39,
+      "accessibility": 30,
+      "merchant_status_filter": 75
+    },
+    "physical_device_tested": false,
+    "emulator_tested": false,
+    "limitations": "Location delivery, Android views, permission dialogs and vendor background process restrictions require phone testing. DEX integration tests substitute Android APIs. JVM tests run the shipped Java filtering/merchant logic. SQLite tests execute production SQL against Python SQLite.",
+    "tested_dex_sha256": "5ddd56513ada900b771790d2551d1a81b26539261568bd0af7560ed81ee876b7"
+  },
+  "map_settings": {
+    "route_controls_in_map_settings": true,
+    "main_route_card": false,
+    "styles": [
+      "detailed_road_map",
+      "simple_route_outline"
+    ],
+    "default_style": "detailed_road_map",
+    "style_persisted": true,
+    "style_switch_preserves_route_and_viewport": true,
+    "floating_window_switch_added": false
+  },
+  "zero_alignment_padding_compacted": true
+}
